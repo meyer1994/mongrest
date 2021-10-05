@@ -22,7 +22,6 @@ async def put(
     _id: ObjectId = Depends(deps.objid),
     data: dict = Depends(deps.removeid)
 ) -> dict:
-    data.pop('_id', None)
     return await coll.find_one_and_replace({'_id': _id}, data)
 
 
@@ -32,7 +31,6 @@ async def patch(
     _id: ObjectId = Depends(deps.objid),
     data: dict = Depends(deps.removeid)
 ) -> dict:
-    data.pop('_id', None)
     return await coll.find_one_and_update({'_id': _id}, data)
 
 
@@ -41,7 +39,6 @@ async def post(
     coll: AsyncIOMotorCollection = Depends(deps.collection),
     data: dict = Depends(deps.removeid)
 ) -> dict:
-    data.pop('_id', None)
     inst = await coll.insert_one(data)
     return await coll.find_one({'_id': inst.inserted_id})
 
