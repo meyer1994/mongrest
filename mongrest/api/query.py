@@ -1,60 +1,42 @@
-from fastapi import APIRouter, Depends
-from motor.motor_asyncio import AsyncIOMotorCollection
+from fastapi import APIRouter
 
-from mongrest import deps
+from mongrest.deps import Filter, Page
 
 
 router = APIRouter()
 
 
 @router.get('/{coll}/_find')
-async def find(
-    coll: AsyncIOMotorCollection = Depends(deps.collection),
-    filtr: dict = Depends(deps.filter)
-) -> list:
-    cursor = coll.find(filtr)
-    return await cursor.to_list(10)
+async def find(f=Filter, p=Page) -> list:
+    cursor = f.coll.find(f.filter)
+    cursor.skip(p.skip)
+    return await cursor.to_list(p.size)
 
 
 @router.delete('/{coll}/_find')
-async def delete(
-    coll: AsyncIOMotorCollection = Depends(deps.collection),
-    filtr: dict = Depends(deps.filter)
-) -> list:
-    result = await coll.delete_many(filtr)
+async def delete(f=Filter) -> list:
+    result = await f.coll.delete_many(f.filter)
     return result.raw_result
 
 
 @router.get('/{coll}/_findone')
-async def findone(
-    coll: AsyncIOMotorCollection = Depends(deps.collection),
-    filtr: dict = Depends(deps.filter)
-) -> dict:
-    return await coll.find_one(filtr)
+async def findone(f=Filter) -> dict:
+    return await f.coll.find_one(f.filter)
 
 
 @router.delete('/{coll}/_findone')
-async def deleteone(
-    coll: AsyncIOMotorCollection = Depends(deps.collection),
-    filtr: dict = Depends(deps.filter)
-) -> dict:
-    return await coll.find_one_and_delete(filtr)
+async def deleteone(f=Filter) -> dict:
+    return await f.coll.find_one_and_delete(f.filter)
 
 
 @router.post('/{coll}/_aggregate')
-async def aggregate(
-    coll: AsyncIOMotorCollection = Depends(deps.collection),
-    filtr: dict = Depends(deps.filter),
-    data: list = []
-) -> list:
-    aggreg = [{'$match': filtr}, *data]
-    cursor = coll.aggregate(aggreg)
-    return await cursor.to_list(10)
+async def aggregate(data: list[dict], f=Filter, p=Page) -> list:
+    aggreg = [{'$match': f.filter}, *data]
+    cursor = f.coll.aggregate(aggreg)
+    cursor.skip(p.skip)
+    return await cursor.to_list(p.size)
 
 
 @router.get('/{coll}/_count')
-async def count(
-    coll: AsyncIOMotorCollection = Depends(deps.collection),
-    filtr: dict = Depends(deps.filter)
-) -> list:
-    return await coll.count_documents(filtr)
+async def count(f=Filter) -> list:
+    return await f.coll.count_documents(f.filter)

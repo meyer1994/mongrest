@@ -1,7 +1,44 @@
 version: '3'
 
 services:
+  mongrest:
+    build:
+      context: ./
+      dockerfile: ./Dockerfile
+    ports:
+      - 8000:8000
+    environment:
+      - MONGO_DB=dev
+      - MONGO_HOST=mongodb://mongo:27017
+
   mongo:
     image: mongo
     ports:
       - 27017:27017
+
+  gotrue:
+    image: gotrue
+    ports:
+      - 9999:9999
+    environment:
+      - GOTRUE_OPERATOR_TOKEN=secret
+      - GOTRUE_SITE_URL=mongrest:8080
+      - GOTRUE_API_HOST=0.0.0.0
+      - GOTRUE_API_PORT=9999
+      - GOTRUE_DB_DRIVER=mysql
+      - GOTRUE_DB_DATABASE_URL=admin:admin@(mysql:3306)/gotrue?multiStatements=true&parseTime=true
+      - GOTRUE_JWT_SECRET=secret
+      - GOTRUE_JWT_DEFAULT_GROUP_NAME=authenticated
+      - GOTRUE_EXTERNAL_EMAIL_ENABLED=false
+      - GOTRUE_EXTERNAL_PHONE_ENABLED=false
+      - GOTRUE_MAILER_AUTOCONFIRM=true
+
+  mysql:
+    image: mysql
+    ports:
+      - 3306:3306
+    environment:
+      - MYSQL_USER=admin
+      - MYSQL_PASSWORD=admin
+      - MYSQL_ALLOW_EMPTY_PASSWORD=admin
+      - MYSQL_DATABASE=gotrue

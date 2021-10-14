@@ -1,8 +1,10 @@
 from fastapi import FastAPI
 
-from mongrest.api.crud import router as router_crud
-from mongrest.api.query import router as router_query
+from mongrest.api import router
+from mongrest.middleware import servertime
+
 
 app = FastAPI()
-app.include_router(router_query)
-app.include_router(router_crud)
+
+app.include_router(router)
+app.middleware('http')(servertime)
