@@ -31,5 +31,6 @@ class FetchOne:
 
 
 @dataclass
-class DeleteOne(FetchOne):
-    pass
+class DeleteOne:
+    _id: ObjectId = Depends(Document)
+    coll: AsyncIOMotorCollection = Depends(Collection)

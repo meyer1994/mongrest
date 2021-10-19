@@ -13,8 +13,9 @@ class FetchIndex:
 
 
 @dataclass
-class DeleteIndex(FetchIndex):
-    pass
+class DeleteIndex:
+    index: str
+    coll: AsyncIOMotorCollection = Depends(Collection)
 
 
 @dataclass
