@@ -9,10 +9,10 @@ from mongrest.config import settings
 JWT = OAuth2PasswordBearer(tokenUrl='/token')
 
 
-async def Collection(coll: str) -> AsyncIOMotorCollection:
+async def Collection(db: str, coll: str) -> AsyncIOMotorCollection:
     client = AsyncIOMotorClient(settings.mongo_host)
-    db = client[settings.mongo_db]
-    return db.get_collection(coll)
+    database = client[db]
+    return database.get_collection(coll)
 
 
 async def User(token: str = Depends(JWT)) -> dict:

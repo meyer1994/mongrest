@@ -3,16 +3,16 @@ from fastapi import APIRouter
 router = APIRouter()
 
 
-@router.get('/{coll}/_schema')
+@router.get('/_schema')
 async def get(coll: str) -> dict:
     pass
 
 
-@router.post('/{coll}/_schema')
+@router.post('/_schema')
 async def post(coll: str, data: dict) -> dict:
     pass
 
 
-@router.delete('/{coll}/_schema')
+@router.delete('/_schema')
 async def delete(coll: str) -> dict:
     pass

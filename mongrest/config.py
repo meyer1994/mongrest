@@ -8,7 +8,7 @@ pydantic.json.ENCODERS_BY_TYPE[ObjectId] = str
 
 
 class Settings(BaseSettings):
-    mongo_db: str = 'dev'
+    mongo_db: str = 'mongrest'
     mongo_host: AnyUrl = 'mongodb://localhost:27017'
     jwt_url: str = 'http://localhost:9999/token'  # gotrue's default api url
     jwt_secret: str = 'secret'

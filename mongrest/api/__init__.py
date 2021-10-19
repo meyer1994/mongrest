@@ -7,7 +7,7 @@ from .token import router as router_token
 # from .admin.schema import router as router_schema
 
 
-router = APIRouter()
+router = APIRouter(prefix='/{db}/{coll}')
 
 router.include_router(router_token)
 router.include_router(router_index)
