@@ -1,6 +1,6 @@
 from fastapi import APIRouter, Depends
 
-from mongrest import deps
+import mongrest.deps.index as deps
 
 
 router = APIRouter()
