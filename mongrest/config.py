@@ -10,7 +10,8 @@ pydantic.json.ENCODERS_BY_TYPE[ObjectId] = str
 class Settings(BaseSettings):
     mongo_db: str = 'dev'
     mongo_host: AnyUrl = 'mongodb://localhost:27017'
-    page_size: int = 10
+    jwt_secret: str = 'secret'
+    jwt_algorithm: str = 'HS256'
 
 
 settings = Settings()
