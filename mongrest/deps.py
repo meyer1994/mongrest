@@ -1,49 +1,97 @@
 from dataclasses import dataclass
 
 from bson import ObjectId
-from fastapi import Depends
 from pydantic import conint
-from starlette.requests import Request
-from motor.motor_asyncio import AsyncIOMotorCollection
+from fastapi import Depends, Request
+from motor.motor_asyncio import AsyncIOMotorCollection, AsyncIOMotorClient
 
-from mongrest import beans
+from mongrest.config import settings
 
 
 async def Collection(coll: str) -> AsyncIOMotorCollection:
-    return beans.get_db().get_collection(coll)
+    client = AsyncIOMotorClient(settings.mongo_host)
+    db = client[settings.mongo_db]
+    return db.get_collection(coll)
 
 
-async def Parameters(req: Request) -> dict:
+async def Document(_id: str) -> ObjectId:
+    return ObjectId(_id)
+
+
+async def Params(req: Request) -> dict:
     params = dict(req.query_params)
-    params.pop('page', None)
-    params.pop('size', None)
+    params.pop('_page', None)
+    params.pop('_size', None)
     return params
 
 
-Coll = Depends(Collection)
-Params = Depends(Parameters)
+@dataclass
+class InsertOne:
+    data: dict
+    coll: AsyncIOMotorCollection = Depends(Collection)
 
 
-@Depends
+@dataclass
+class UpdateOne:
+    data: dict
+    _id: ObjectId = Depends(Document)
+    coll: AsyncIOMotorCollection = Depends(Collection)
+
+
+@dataclass
+class FetchOne:
+    _id: ObjectId = Depends(Document)
+    coll: AsyncIOMotorCollection = Depends(Collection)
+
+
+@dataclass
+class DeleteOne(FetchOne):
+    pass
+
+
 @dataclass
 class Page:
-    page: conint(ge=1) = 1
-    size: conint(ge=1) = 10
+    _page: conint(ge=1) = 1
+    _size: conint(ge=1) = 10
 
     @property
-    def skip(self) -> int:
-        return (self.page - 1) * self.size
+    def _skip(self) -> int:
+        return (self._page - 1) * self._size
 
 
-@Depends
 @dataclass
-class Filter:
+class Query:
+    query: dict = Depends(Params)
     coll: AsyncIOMotorCollection = Depends(Collection)
-    filter: dict = Depends(Parameters)
 
 
-@Depends
 @dataclass
-class Doc:
+class PagedQuery:
+    query: dict = Depends(Params)
     coll: AsyncIOMotorCollection = Depends(Collection)
-    _id: ObjectId = Depends(ObjectId)
+    page: Page = Depends(Page)
+
+
+@dataclass
+class AggregateQuery:
+    data: list[dict]
+    query: dict = Depends(Params)
+    coll: AsyncIOMotorCollection = Depends(Collection)
+    page: Page = Depends(Page)
+
+
+@dataclass
+class FetchIndex:
+    index: str
+    coll: AsyncIOMotorCollection = Depends(Collection)
+
+
+@dataclass
+class DeleteIndex(FetchIndex):
+    pass
+
+
+@dataclass
+class CreateIndex:
+    data: list[tuple]
+    coll: AsyncIOMotorCollection = Depends(Collection)
