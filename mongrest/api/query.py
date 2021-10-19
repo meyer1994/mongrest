@@ -1,7 +1,6 @@
 from fastapi import APIRouter, Depends
 
 import mongrest.deps.query as deps
-from mongrest.deps import User
 
 
 router = APIRouter()
@@ -38,6 +37,6 @@ async def aggregate(req=Depends(deps.AggregateQuery)) -> list:
     return await cursor.to_list(req.page._size)
 
 
-@router.get('/{coll}/_count', dependencies=[Depends(User)])
+@router.get('/{coll}/_count')
 async def count(req=Depends(deps.Query)) -> list:
     return await req.coll.count_documents(req.query)
