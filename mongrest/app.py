@@ -1,10 +1,9 @@
 from fastapi import FastAPI
 
-from mongrest.api import router
-from mongrest.middleware import servertime
+from mongrest import api
+from mongrest import middleware
 
 
 app = FastAPI()
-
-app.include_router(router)
-app.middleware('http')(servertime)
+app.include_router(api.router)
+app.middleware('http')(middleware.servertime)
