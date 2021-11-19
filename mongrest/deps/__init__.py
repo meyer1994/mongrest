@@ -1,5 +1,6 @@
 import jwt
-from fastapi import Depends
+from pydantic import BaseModel
+from fastapi import Depends, Request
 from fastapi.security import OAuth2PasswordBearer
 from motor.motor_asyncio import (
     AsyncIOMotorClient,
@@ -13,9 +14,13 @@ from mongrest.config import settings
 JWT = OAuth2PasswordBearer(tokenUrl='/token')
 
 
-async def DB(db: str) -> AsyncIOMotorDatabase:
+class Response(BaseModel):
+    data: dict
+
+
+async def DB(req: Request) -> AsyncIOMotorDatabase:
     client = AsyncIOMotorClient(settings.mongo_host)
-    return client[db]
+    return client[settings.mongo_db]
 
 
 async def Collection(coll: str, db=Depends(DB)) -> AsyncIOMotorCollection:

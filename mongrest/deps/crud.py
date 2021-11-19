@@ -25,6 +25,11 @@ class UpdateOne:
 
 
 @dataclass
+class ReplaceOne(UpdateOne):
+    pass
+
+
+@dataclass
 class FetchOne:
     _id: ObjectId = Depends(Document)
     coll: AsyncIOMotorCollection = Depends(Collection)

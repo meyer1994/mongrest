@@ -8,7 +8,6 @@ from . import Collection
 
 @dataclass
 class FetchIndex:
-    index: str
     coll: AsyncIOMotorCollection = Depends(Collection)
 
 

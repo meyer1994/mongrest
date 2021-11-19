@@ -1,45 +1,32 @@
-from dataclasses import dataclass
+import json
+from dataclasses import dataclass, field
 
-from fastapi import Depends, Request
-from pydantic import conint
+from fastapi import Depends
+from pydantic import conint, Json
 from motor.motor_asyncio import AsyncIOMotorCollection
 
 from . import Collection
 
 
-async def Params(req: Request) -> dict:
-    params = dict(req.query_params)
-    params.pop('_page', None)
-    params.pop('_size', None)
-    return params
-
-
 @dataclass
 class Page:
-    _page: conint(ge=1) = 1
-    _size: conint(ge=1) = 10
+    page: conint(ge=1) = 1
+    size: conint(ge=1, le=100) = 10
+    skip: int = field(init=False)
 
-    @property
-    def _skip(self) -> int:
-        return (self._page - 1) * self._size
+    def __post_init__(self):
+        self.skip = (self.page - 1) * self.size
 
 
 @dataclass
 class Query:
-    query: dict = Depends(Params)
+    query: str = field(default=r'{}')
     coll: AsyncIOMotorCollection = Depends(Collection)
+
+    def __post_init__(self):
+        self.query = json.loads(self.query)
 
 
 @dataclass
-class PagedQuery:
-    query: dict = Depends(Params)
-    coll: AsyncIOMotorCollection = Depends(Collection)
-    page: Page = Depends(Page)
-
-
-@dataclass
-class AggregateQuery:
-    data: list[dict]
-    query: dict = Depends(Params)
-    coll: AsyncIOMotorCollection = Depends(Collection)
+class PagedQuery(Query):
     page: Page = Depends(Page)
