@@ -16,7 +16,7 @@ async def get(dep: FetchSchema = Depends(FetchSchema)) -> dict:
             .get('validator', {})\
             .get('$jsonSchema', {})
 
-    return
+    return {}
 
 
 @router.post('/_schema')

@@ -28,5 +28,10 @@ class Query:
 
 
 @dataclass
-class PagedQuery(Query):
+class PagedQuery:
     page: Page = Depends(Page)
+    query: str = field(default=r'{}')
+    coll: AsyncIOMotorCollection = Depends(Collection)
+
+    def __post_init__(self):
+        self.query = json.loads(self.query)

@@ -25,8 +25,10 @@ class UpdateOne:
 
 
 @dataclass
-class ReplaceOne(UpdateOne):
-    pass
+class ReplaceOne:
+    data: dict
+    _id: ObjectId = Depends(Document)
+    coll: AsyncIOMotorCollection = Depends(Collection)
 
 
 @dataclass
