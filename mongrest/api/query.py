@@ -1,6 +1,6 @@
 from fastapi import APIRouter, Depends
 
-from mongrest.deps.query import PagedQuery, Query, AggregateQuery
+from mongrest.deps.query import Query, PagedQuery
 
 
 router = APIRouter()
@@ -8,7 +8,6 @@ router = APIRouter()
 
 @router.get('/_find')
 async def find(req: PagedQuery = Depends(PagedQuery)) -> list:
-    print(req)
     cursor = req.coll.find(req.query)
     cursor.skip(req.page.skip)
     return await cursor.to_list(req.page.size)

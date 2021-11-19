@@ -1,10 +1,6 @@
 from fastapi import APIRouter, Depends
 
-from mongrest.deps.index import (
-    FetchIndex,
-    DeleteIndex,
-    CreateIndex
-)
+from mongrest.deps.index import FetchIndex, DeleteIndex, CreateIndex
 
 
 router = APIRouter()

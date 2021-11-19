@@ -2,7 +2,7 @@ import json
 from dataclasses import dataclass, field
 
 from fastapi import Depends
-from pydantic import conint, Json
+from pydantic import conint
 from motor.motor_asyncio import AsyncIOMotorCollection
 
 from . import Collection
