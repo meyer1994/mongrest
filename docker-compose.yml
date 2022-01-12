@@ -1,7 +1,30 @@
 version: '3'
 
 services:
-  mongo:
-    image: mongo
+  primary:
+    image: bitnami/mongodb
+    environment:
+      - MONGODB_ADVERTISED_HOSTNAME=primary
+      - MONGODB_REPLICA_SET_MODE=primary
+      - MONGODB_REPLICA_SET_KEY=mongrest
+      - MONGODB_ROOT_PASSWORD=password
     ports:
       - 27017:27017
+
+  secondary:
+    image: bitnami/mongodb
+    environment:
+      - MONGODB_ADVERTISED_HOSTNAME=secondary
+      - MONGODB_REPLICA_SET_MODE=secondary
+      - MONGODB_INITIAL_PRIMARY_HOST=primary
+      - MONGODB_REPLICA_SET_KEY=mongrest
+      - MONGODB_INITIAL_PRIMARY_ROOT_PASSWORD=password
+
+  arbiter:
+    image: bitnami/mongodb
+    environment:
+      - MONGODB_ADVERTISED_HOSTNAME=arbiter
+      - MONGODB_REPLICA_SET_MODE=arbiter
+      - MONGODB_INITIAL_PRIMARY_HOST=primary
+      - MONGODB_INITIAL_PRIMARY_ROOT_PASSWORD=password
+      - MONGODB_REPLICA_SET_KEY=mongrest
