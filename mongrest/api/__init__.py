@@ -1,14 +1,19 @@
 from fastapi import APIRouter
 
-from .crud import router as router_crud
-from .index import router as router_index
-from .query import router as router_query
-from .schema import router as router_schema
+from . import query
+from . import index
+from . import schema
+from . import realtime
 
+router = APIRouter()
 
-router = APIRouter(prefix='/{coll}')
+# API
+router.include_router(query.router, prefix='/rest/{coll}')
+router.include_router(realtime.router, prefix='/realtime/{coll}')
 
-router.include_router(router_schema)
-router.include_router(router_index)
-router.include_router(router_query)
-router.include_router(router_crud)
+# Admin
+router.include_router(index.router, prefix='/admin/index/{coll}')
+router.include_router(schema.router, prefix='/admin/schema/{coll}')
+
+# Files
+# coming soon!

@@ -1,5 +1,4 @@
-from pydantic import BaseModel
-from fastapi import Depends, Request
+from fastapi import Depends
 from motor.motor_asyncio import (
     AsyncIOMotorClient,
     AsyncIOMotorCollection,
@@ -9,11 +8,7 @@ from motor.motor_asyncio import (
 from mongrest.config import settings
 
 
-class Response(BaseModel):
-    data: dict
-
-
-async def DB(req: Request) -> AsyncIOMotorDatabase:
+async def DB() -> AsyncIOMotorDatabase:
     client = AsyncIOMotorClient(settings.mongo_host)
     return client[settings.mongo_db]
 
