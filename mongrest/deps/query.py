@@ -35,3 +35,9 @@ class PagedQuery:
 
     def __post_init__(self):
         self.query = json.loads(self.query)
+
+
+@dataclass
+class InsertOne:
+    data: dict
+    coll: AsyncIOMotorCollection = Depends(Collection)

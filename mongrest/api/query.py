@@ -1,9 +1,16 @@
 from fastapi import APIRouter, Depends
 
-from mongrest.deps.query import Query, PagedQuery
+from mongrest.deps.query import Query, PagedQuery, InsertOne
 
 
 router = APIRouter()
+
+
+@router.post('/', status_code=201)
+async def post(ctx: InsertOne = Depends(InsertOne)) -> dict:
+    ctx.data.pop('_id', None)
+    inst = await ctx.coll.insert_one(ctx.data)
+    return await ctx.coll.find_one({'_id': inst.inserted_id})
 
 
 @router.get('/_find')

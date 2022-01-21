@@ -1,5 +1,5 @@
 import asyncio
-from contextlib import asynccontextmanager
+from asyncio import FIRST_COMPLETED
 
 from bson import Timestamp
 from fastapi import APIRouter, Depends
@@ -33,10 +33,9 @@ async def close(ws: WebSocket):
 
 async def consume(ws: WebSocket, ctx: Query):
     aggr = [{'$match': ctx.query}]
-
     watcher = ctx.coll.watch(pipeline=aggr, full_document='updateLookup')
 
-    async with watcher as stream:  # noqa
+    async with watcher as stream:
         async for change in stream:
             change = Change(**change)
             change = change.json()
@@ -54,8 +53,7 @@ async def websocket(ws: WebSocket, ctx: Query = Depends(Query)):
 
     tasks = {closer, consumer}
 
-    done, pending = await asyncio\
-        .wait(tasks, return_when=asyncio.FIRST_COMPLETED)
+    done, pending = await asyncio.wait(tasks, return_when=FIRST_COMPLETED)
 
     for item in pending:
         item.cancel()
