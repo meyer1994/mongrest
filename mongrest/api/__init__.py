@@ -1,6 +1,6 @@
 from fastapi import APIRouter
 
-from . import query
+from . import rest
 from . import index
 from . import schema
 from . import realtime
@@ -8,7 +8,7 @@ from . import realtime
 router = APIRouter()
 
 # API
-router.include_router(query.router, prefix='/rest/{coll}')
+router.include_router(rest.router, prefix='/rest/{coll}')
 router.include_router(realtime.router, prefix='/realtime/{coll}')
 
 # Admin

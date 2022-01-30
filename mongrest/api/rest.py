@@ -1,6 +1,6 @@
 from fastapi import APIRouter, Depends
 
-from mongrest.deps.query import Query, PagedQuery, InsertOne
+from mongrest.deps.rest import Query, PagedQuery, InsertOne
 
 
 router = APIRouter()
