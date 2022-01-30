@@ -12,8 +12,8 @@ router.include_router(rest.router, prefix='/rest/{coll}')
 router.include_router(realtime.router, prefix='/realtime/{coll}')
 
 # Admin
-router.include_router(index.router, prefix='/admin/index/{coll}')
-router.include_router(schema.router, prefix='/admin/schema/{coll}')
+router.include_router(index.router, prefix='/index/{coll}')
+router.include_router(schema.router, prefix='/schema/{coll}')
 
 # Files
 # coming soon!

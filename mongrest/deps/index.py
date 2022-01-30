@@ -19,5 +19,5 @@ class DeleteIndex:
 
 @dataclass
 class CreateIndex:
-    data: list[tuple]
+    data: dict
     coll: AsyncIOMotorCollection = Depends(Collection)

@@ -10,12 +10,8 @@ from . import Collection
 
 @dataclass
 class Page:
-    page: conint(ge=1) = 1
-    size: conint(ge=1, le=100) = 10
-    skip: int = field(init=False)
-
-    def __post_init__(self):
-        self.skip = (self.page - 1) * self.size
+    skip: conint(ge=0) = 0
+    limit: conint(ge=1, le=100) = 10
 
 
 @dataclass

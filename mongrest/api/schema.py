@@ -7,9 +7,9 @@ router = APIRouter()
 
 
 @router.get('/')
-async def get(dep: FetchSchema = Depends(FetchSchema)) -> dict:
-    filtr = {'name': dep.coll}
-    cursor = await dep.db.list_collections(filter=filtr)
+async def get(ctx: FetchSchema = Depends(FetchSchema)) -> dict:
+    filtr = {'name': ctx.coll}
+    cursor = await ctx.db.list_collections(filter=filtr)
 
     for info in cursor:
         return info.get('options', {})\
@@ -20,18 +20,18 @@ async def get(dep: FetchSchema = Depends(FetchSchema)) -> dict:
 
 
 @router.post('/', status_code=201)
-async def post(dep: CreateSchema = Depends(CreateSchema)) -> dict:
+async def post(ctx: CreateSchema = Depends(CreateSchema)) -> dict:
     command = {
-        'collMod': dep.coll,
-        'validator': {'$jsonSchema': dep.schema}
+        'collMod': ctx.coll,
+        'validator': {'$jsonSchema': ctx.schema}
     }
-    return await dep.db.command(command)
+    return await ctx.db.command(command)
 
 
 @router.delete('/')
-async def delete(dep: DeleteSchema = Depends(DeleteSchema)) -> dict:
+async def delete(ctx: DeleteSchema = Depends(DeleteSchema)) -> dict:
     command = {
-        'collMod': dep.coll,
+        'collMod': ctx.coll,
         'validator': {'$jsonSchema': {}}
     }
-    return await dep.db.command(command)
+    return await ctx.db.command(command)
