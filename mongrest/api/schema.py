@@ -6,7 +6,7 @@ from mongrest.deps.schema import FetchSchema, CreateSchema, DeleteSchema
 router = APIRouter()
 
 
-@router.get('/_schema')
+@router.get('/')
 async def get(dep: FetchSchema = Depends(FetchSchema)) -> dict:
     filtr = {'name': dep.coll}
     cursor = await dep.db.list_collections(filter=filtr)
@@ -19,7 +19,7 @@ async def get(dep: FetchSchema = Depends(FetchSchema)) -> dict:
     return {}
 
 
-@router.post('/_schema')
+@router.post('/', status_code=201)
 async def post(dep: CreateSchema = Depends(CreateSchema)) -> dict:
     command = {
         'collMod': dep.coll,
@@ -28,7 +28,7 @@ async def post(dep: CreateSchema = Depends(CreateSchema)) -> dict:
     return await dep.db.command(command)
 
 
-@router.delete('/_schema')
+@router.delete('/')
 async def delete(dep: DeleteSchema = Depends(DeleteSchema)) -> dict:
     command = {
         'collMod': dep.coll,
