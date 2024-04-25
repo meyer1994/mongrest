@@ -4,7 +4,7 @@ click==8.0.3
 fastapi==0.72.0
 h11==0.13.0
 idna==3.3
-pydantic==1.9.0
+pydantic==1.10.13
 sniffio==1.2.0
 starlette==0.17.1
 typing_extensions==4.0.1
